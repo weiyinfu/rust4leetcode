@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>刷Leetcode</title>
+  <link rel="stylesheet/less" type="text/css" href="index.less"/>
+  <script src="https://cdn.bootcss.com/less.js/3.10.3/less.min.js"></script>
+  <script src="https://cdn.bootcss.com/vue/2.6.11/vue.js"></script>
+  <script src="https://cdn.bootcss.com/axios/0.19.2/axios.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script>
+  <link href="https://cdn.bootcdn.net/ajax/libs/highlight.js/10.0.3/styles/tomorrow-night-blue.min.css" rel="stylesheet">
+</head>
+<body>
+<div id="app">
+  <div>
+    <table>
+      <tr v-for="i in problems">
+        <td>{{i.stat.frontend_question_id}}</td>
+        <td><a :href="'https://leetcode-cn.com/problems/'+i.stat.question__title_slug" target="_blank">{{i.chinese||i.stat.question__title}}</a>
+        </td>
+        <td v-for="(code,lang) in i.answer" class="lang"><a v-if="code" @click="show(code)">{{lang}}</a>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div v-if="codePanel.visible" class="codePanel" :tabindex="-1" @keydown.esc="onEscapeCode">
+    <pre>{{codePanel.content}}</pre>
+  </div>
+</div>
+</body>
+<script>
+
+  const app = new Vue({
+    el: "#app",
+    data() {
+      return {
+        problems: [],
+        codePanel: {
+          visible: false,
+          content: '',
+        }
+      }
+    },
+    mounted() {
+      axios.get("index.json").then(resp => {
+        this.problems = resp.data;
+      })
+    },
+    methods: {
+      onEscapeCode() {
+        this.codePanel.visible = false;
+      },
+      show(code) {
+        this.codePanel.visible = true;
+        this.codePanel.content = code;
+        setTimeout(() => {
+          const ele = document.querySelector(".codePanel");
+          ele.focus();
+          const codeEle = ele.querySelector('pre')
+          hljs.highlightBlock(codeEle);
+        }, 0)
+      }
+    }
+  })
+</script>
+</html>
