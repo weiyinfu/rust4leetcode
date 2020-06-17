@@ -32,12 +32,13 @@ fn list2string(li: &Option<Box<ListNode>>) -> String {
     let mut s: String = "".to_string();
     let mut i = li;
     loop {
-        if i.is_none() {
-            break;
+        match i {
+            None => break,
+            Some(ii) => {
+                s += &format!("{}", ii.val);
+                i = &ii.next;
+            }
         }
-        let ii = i.as_deref().unwrap();
-        s += &format!("{}", ii.val);
-        i = &ii.next;
     }
     return s;
 }

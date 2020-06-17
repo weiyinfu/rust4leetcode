@@ -50,10 +50,14 @@ fn main() {
         Some(Rc::new(RefCell::new(TreeNode::new(4)))),
         Some(Rc::new(RefCell::new(TreeNode::new(5)))),
     );
-    left.as_mut().as_deref_mut().unwrap().get_mut().left = left_son.0;
-    left.as_mut().as_deref_mut().unwrap().get_mut().right = left_son.1;
-    root.as_mut().as_deref_mut().unwrap().get_mut().left = left;
-    root.as_mut().as_deref_mut().unwrap().get_mut().right = right;
-    let res = Solution::inorder_traversal(root);
+    {
+        let mut root_node = root.as_deref().unwrap().borrow_mut();
+        root_node.left = left;
+        root_node.right = right;
+        let mut left_node = root_node.left.as_deref().unwrap().borrow_mut();
+        left_node.left = left_son.0;
+        left_node.right = left_son.1;
+    }
+    let res = Solution::inorder_traversal(root.take());
     println!("{:?}", res);
 }
