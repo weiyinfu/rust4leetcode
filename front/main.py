@@ -53,7 +53,11 @@ def get_python():
 
 
 def get_cpp():
-    return {}
+    return get_common_dir(join(root, "cpp"), ".cpp")
+
+
+def get_js():
+    return get_common_dir(join(root, "js"), ".js")
 
 
 def get_go():
